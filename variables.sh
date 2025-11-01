@@ -1,10 +1,16 @@
 #!/bin/bash
 
 #variables, must not contain space between equal sign
-person1="Ramesdfasfsh"
-person2="Sursdfsadfesh"
+person1="Ramesh"
+person2="Suresh"
+#$1 and $2, ...... are cmd line parameters
+person3=$1
+person4=$2
+
 
 echo "This is a conversation script by $person1."
 echo "How are you today? by $person2."
 echo "I hope you're doing well! by $person1."
 echo "I'm doing great, thank you! by $person2."
+echo "Nice to meet you, $person3! by $person1."
+echo "Pleasure to meet you too, $person4! by $person2."
