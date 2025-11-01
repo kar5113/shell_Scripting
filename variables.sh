@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#variables, must not contain space between equal sign
 person1="Ramesdfasfsh"
 person2="Sursdfsadfesh"
 
