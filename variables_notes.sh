@@ -89,8 +89,8 @@ echo "process id of the current script: $$"
 sleep 5 &  # Example background command
 echo "process id of the last background command: $!"
 
-#process id of previous command is $?
-echo "process id of previous command: $?"
+#exit status of previous command is $?
+echo "exit status of previous command: $?"
 
 # Example command to get exit status
 echo "$(sleep 2)" # Example command to get exit status
@@ -144,7 +144,22 @@ else
     echo "The number is less than or equal to 10"
 fi
 
+#event odd check
 
+if [ $1 -mod 2 -eq 0 ]; then
+    echo "The number is even"
+else
+    echo "The number is odd"
+fi
+
+ # or
+
+# here % is modulo operator and the expression $(( ... )) is used for arithmetic evaluation. expression must be enclosed within double parentheses.
+ if [ $(( $1 % 2 )) -eq 0 ]; then
+    echo "The number is even"
+else
+    echo "The number is odd"
+fi 
 
 
 

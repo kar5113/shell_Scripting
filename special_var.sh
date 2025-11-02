@@ -8,9 +8,13 @@ echo "process id of the current script: $$"
 #add & to run a command in background
 sleep 5 &  # Example background command
 echo "process id of the last background command: $!"
+
+# Example command to get exit status
 echo "$(sleep 2)" # Example command to get exit status
-#process id of previous command is $?
-echo "process id of previous command: $?"
+
+# previous command exit status
+echo "Exit status of previous command: $?"
+
 
 
 
