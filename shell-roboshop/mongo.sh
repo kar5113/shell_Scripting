@@ -4,6 +4,7 @@ USER=$(id -u)
 SCRIPT_NAME=$(echo $0 | cut -d . -f1)
 LOGS_FILE="/var/log/Shell-roboshop/$SCRIPT_NAME.log"
 DATE=$(date +%F-%H-%M-%S)
+SCRIPT_DIR=$(pwd)
 
 mkdir -p $LOGS_FILE
 
@@ -25,7 +26,7 @@ VALIDATE(){
 
 ##Create the repo for mongo db
 echo -e "\e[32mCreating the mongo db repo\e[0m" >> $LOGS_FILE
-cp /mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE "Creating the mongo db repo"
 
 #install mongo db
