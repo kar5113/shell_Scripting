@@ -1,7 +1,7 @@
 #!/bin/bash
 
-priority for variables
-env_var > set variables in script > 
+# priority for variables
+# env_var > set variables in script > 
 
 
 #variables, must not contain space between equal sign

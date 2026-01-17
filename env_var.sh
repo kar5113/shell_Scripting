@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #create a env variable with export command, create externally, will persist only for current session or current process
-# export DB_USER="admin"
-# export DB_PASSWORD="password123"
+export DB_USER="admin"
+export DB_PASSWORD="password123"
 
 #access the env variable
 echo "Database  User: $DB_USER"
