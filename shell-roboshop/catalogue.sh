@@ -5,6 +5,9 @@ set -e
 set -o pipefail
 trap 'echo -e "\e[31mScript failed at line: $LINENO\e[0m"' ERR
 
+
+#now take the commonly executed commands and group them into functions similar to ansible roles, and write them to a bash script and call it from the main script, using source ./filename.sh or . /filename.sh
+
 USER=$(id -u)
 SCRIPT_NAME=$(echo $0 | cut -d . -f1)
 LOGS_FILE="/var/log/Shell-roboshop/$SCRIPT_NAME.log"
