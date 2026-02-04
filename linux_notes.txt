@@ -1,0 +1,73 @@
+#### Notes for linux administration
+
+
+## What is DevOps?
+   - DevOps is a set of practices that combines software development (Dev) and IT operations (Ops) to shorten the development lifecycle and provide continuous delivery with high software quality.
+   - DevOps is a set of practices, principles, and cultural philosophies that aim to unify software development (Dev) and IT operations (Ops). The goal is to shorten the development lifecycle, increase deployment frequency, and deliver high-quality software reliably.
+   - DevOps is the process of combining development, building, deploying, testing there by improving efficiency, collaboration and increasing deployment frequency reliably.
+
+
+- ssh-keygen -f <file-name> >> generates a key pair and saves it to the specified file.
+- ssh-copy-id -i <public-key-file> <user>@<host> >> copies the public key to the remote host for passwordless SSH access.
+- ssh -i <private-key-file> <user>@<host> >> connects to the remote host using the specified private key for authentication.
+
+-- To create a passwordless ssh login using ssh keys for users :
+   - Generate ssh key pair using ssh-keygen command.
+   - Copy the public key to the remote server using ssh-copy-id command.
+   - Test the passwordless login using ssh command.
+
+   or manually copy the contents of the public key file to the user's home dir/.ssh/authorized_keys file on the remote server.
+
+-- By default password authentication is disables, go to /etc/ssh/sshd_config and set PasswordAuthentication yes and restart ssh service.
+-- Timeout settings can be configured in sshd_config file using ClientAliveInterval and ClientAliveCountMax parameters.
+-- check the syntax of sshd_config file after any changes using: sshd -t
+
+# Numeric File Permissions in Linux
+#
+# Permissions are represented by three digits: OWNER GROUP OTHERS
+# Each digit is a sum of:
+#   4 = read (r)
+#   2 = write (w)
+#   1 = execute (x)
+#
+# Example: 755 = rwxr-xr-x
+#   7 = 4+2+1 = rwx (owner)
+#   5 = 4+0+1 = r-x (group)
+#   5 = 4+0+1 = r-x (others)
+#
+# Common values:
+#   777 = rwxrwxrwx (full access)
+#   755 = rwxr-xr-x (common for directories)
+#   644 = rw-r--r-- (common for files)
+#
+# Usage:
+#   chmod 755 filename
+
+
+/etc/sudoers - configuration file for sudo access management.
+- visudo - command to safely edit the sudoers file.
+wheel group - a special user group that is often granted sudo privileges. add users to this group to give them sudo access.
+for sudo su , super user access without password prompt, add the following line to sudoers file:
+   %wheel ALL=(ALL) NOPASSWD: ALL
+
+
+## ACLs (Access Control Lists) in Linux
+- ACLs provide a more flexible permission mechanism for file systems than the standard Unix permissions.
+- They allow you to set permissions for individual users or groups on a per-file or per-directory basis.
+- Common ACL commands:  
+      - getfacl <file/directory> -> displays the access control lists (ACLs) of the specified file or directory.
+      - setfacl -m u:<username>:<permissions> <file/directory> -> modifies the ACLs of the specified file or directory to grant the specified user the specified permissions.
+      - setfacl -x u:<username> <file/directory> -> removes the specified user's ACLs from the specified file or directory.
+
+## Bash Scripting Best Practices
+- To call a script from anywhere, add the script's directory to the PATH environment variable or place the script in a directory that is already in the PATH (e.g., /usr/local/bin).   
+or use source /path/to/script.sh or . /path/to/script.sh to run the script in the current shell context.
+- Use set -e to exit the script immediately if any command exits with a non-zero status.
+- Use set -o pipefail to ensure that the script exits with a non-zero status if any command in a pipeline fails.
+- Use trap to catch errors and perform cleanup actions before exiting the script.
+- Use functions to organize your code and make it more readable.
+- Use comments to explain the purpose of the script and any complex logic.      
+
+
+
+

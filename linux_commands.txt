@@ -1,0 +1,295 @@
+#### Linux commands
+
+# For ssh key generation and usage
+- ssh-keygen -f <file-name> -> generates a key pair and saves it to the specified file.
+- ssh-copy-id -i <public-key-file> <user>@<host> -> copies the public key to the remote host for passwordless SSH access.
+- ssh -i <private-key-file> <user>@<host> -> connects to the remote host using the specified private key for authentication.
+
+# For super user access
+- sudo su -> switches to the superuser (root) account.
+- sudo <command> -> executes a command with superuser privileges.
+- /etc/sudoers - configuration file for sudo access management.
+- visudo - command to safely edit the sudoers file.
+    wheel group - a special user group that is often granted sudo privileges. add users to this group to give them sudo access.
+    for sudo su , super user access without password prompt, add the following line to sudoers file:
+    %wheel ALL=(ALL) NOPASSWD: ALL
+
+# For file and directory operations
+- ls -la -> lists all files and directories in the current directory with detailed information.
+- cd <directory> -> changes the current directory to the specified directory.
+- pwd -> prints the current working directory.
+- mkdir <directory-name> -> creates a new directory with the specified name.    
+- rm -rf <directory-name> -> removes the specified directory and its contents recursively and forcefully.
+- cp <source> <destination> -> copies files or directories from the source to the destination.
+- mv <source> <destination> -> moves or renames files or directories from the source to the destination.
+- scp <source> <user>@<host>:<destination> -> securely copies files or directories from the source to the destination on a remote host.
+
+
+# For info on system and processes
+- top -> displays real-time information about system processes and resource usage.
+- df -h -> shows disk space usage in a human-readable format.
+- free -m -> displays memory usage in megabytes.
+- uname -r -> shows the kernel version of the operating system.
+- ps aux -> lists all running processes with detailed information.
+- ps -> lists the processes running in the current shell session.
+- ps -ef -> lists all running processes in a full-format listing.
+- pgrep <process-name> -> searches for processes by name and returns their process IDs.
+- kill -9 <process-id> -> forcefully terminates the specified process by its process
+- killall <process-name> -> terminates all processes with the specified name.
+- kill <process-id> -> terminates the specified process by its process ID.
+- use & to run a process in the background. Example: sleep 100 &
+
+
+
+# For file editing and viewing
+- cat <file-name> -> displays the contents of a file.
+- vi <file-name> -> opens a file in the vi text editor for editing.
+- nano <file-name> -> opens a file in the nano text editor for editing.
+- tail -f <file-name> -> continuously monitors and displays the last lines of a file in real-time.
+- touch <file-name> -> creates a new empty file or updates the timestamp of an existing file.
+- cat >> <file-name> -> appends the output of a command to a file.
+- cat > <file-name> -> overwrites the contents of a file with the output of a command.
+- echo "text" >> <file-name> -> appends the specified text to a file.
+- echo "text" > <file-name> -> overwrites the contents of a file with the specified text.
+- <command> | tee -a <file-name> -> appends the output of a command to a file and also displays it on the terminal.
+- <command> >> <file-name> -> overwrites the contents of a file with the output of a command.
+- tee <file-name> -> overwrites the contents of a file with the input provided.
+- tee -a <file-name> -> appends the input provided to a file.
+- grep "pattern" <file-name> -> searches for a specific pattern in a file and displays the matching lines.
+- grep -i "pattern" <file-name> -> searches for a specific pattern in a file, ignoring case sensitivity, and displays the matching lines.
+- grep -r "pattern" <directory> -> recursively searches for a specific pattern in all files within a directory and displays the matching lines.
+- grep -rn "pattern" <directory> -> recursively searches for a specific pattern in all files within a directory, displaying the matching lines along with their line numbers.
+- grep -v "pattern" <file-name> -> searches for lines that do not match the specified pattern in a file and displays them.
+- cut -d '<delimiter>' -f <field-number> <file-name> -> extracts specific fields from each line of a file based on the specified delimiter. 
+- awk '{print $<field-number> , $<field-number> .....}' <file-name> -> extracts and displays the specified field from each line of a file. can print multiple fields as well. or a combination of text and fields.
+    Example: awk '{print $2}' file.txt -> displays the second field from each line of file.txt.
+- awk -F '<delimiter>' '{print $<field-number>}' <file-name> -> extracts and displays the specified field from each line of a file using the specified delimiter.
+    Example: awk -F ',' '{print $1}' file.txt -> displays the first field from each line of file.txt, using a comma as the delimiter.
+            echo "hello/asfa/sdfa/dsf/world" | awk -F "/" '{print $NF}' -> prints 'world' (the last field after splitting by '/')  
+- awk vs cut: awk is more powerful and flexible, allowing for complex text processing and pattern matching, while cut is simpler and faster for basic field extraction tasks.
+- head <file-name> -> displays the first 10 lines of a file by default.
+- tail <file-name> -> displays the last 10 lines of a file by default.
+- head -n <number-of-lines> <file-name> -> displays the first specified number of lines from a file.
+- head -n {<line1>-<line2>} <file-name> -> displays lines from line1 to line2 from a file.
+- tail -n <number-of-lines> <file-name> -> displays the last specified number of lines from a file.
+- sort <file-name> -> sorts the lines of a file in ascending order.
+- sort -r <file-name> -> sorts the lines of a file in descending order.
+- uniq <file-name> -> removes duplicate consecutive lines from a file.
+- uniq -c <file-name> -> counts the occurrences of each unique line in a file.
+- diff <file1> <file2> -> compares two files line by line and displays the differences between them.
+- wc -l <file-name> -> counts the number of lines in a file.
+- wc -w <file-name> -> counts the number of words in a file.
+- wc -c <file-name> -> counts the number of bytes in a file.
+- ln -s <target-file> <link-name> -> creates a symbolic link (shortcut) to the target file with the specified link name.
+- ln <target-file> <link-name> -> creates a hard link to the target file with the specified link name.
+- less <file-name> -> opens a file in a pager for viewing, allowing navigation through the file using keyboard commands.
+- tee <file-name> -> writes the input to both the specified file and standard output.
+- tee -a <file-name> -> appends the input to the specified file and also displays it on the terminal.
+- sed 's/old/new/g' <file-name> -> replaces all occurrences of 'old' with 'new' in the specified file and displays the result.
+- sed 's/old/new/' <file-name> -> replaces the first occurrence of 'old' with 'new' in each line of the specified file and displays the result.
+- sed 's/old/new/gI' <file-name> -> replaces all occurrences of 'old' with 'new' in the specified file, ignoring case sensitivity, and displays the result.
+- sed -i 's/old/new/g' <file-name> -> replaces all occurrences of 'old' with 'new' in the specified file and saves the changes directly to the file
+- sed -n '5,10p' <file-name> -> displays lines 5 to 10 from the specified file.
+- sed '5d' <file-name> -> deletes line 5 from the specified file and displays the result.
+- sed '5a\New line of text' <file-name> -> appends a new line of text after line 5 in the specified file and displays the result.
+- sed '5i\New line of text' <file-name> -> inserts a new line of text before line 5 in the specified file and displays the result.
+- sed -i '5a\New line of text' <file-name> -> appends a new line of text after line 5 in the specified file and saves the changes directly to the file.
+- sed -i '5i\New line of text' <file-name> -> inserts a new line of text before line 5 in the specified file and saves the changes directly to the
+- sed '/hello/d' <file-name> -> deletes all lines containing the pattern 'hello' from the specified file and displays the result.
+- sed -i '/hello/d' <file-name> -> deletes all lines containing the pattern 'hello' from the specified file and saves the changes directly to the file.
+- sed -i '5d' <file-name> -> deletes line 5 from the specified file and saves the changes directly to the file.
+- awk '{gsub(/old/, "new"); print}' <file-name> -> replaces all occurrences of 'old' with 'new' in the specified file and displays the result.
+- awk -i inplace '{gsub(/old/, "new"); print}' <file-name> -> replaces all occurrences of 'old' with 'new' in the specified file and saves the changes directly to the file.
+- tr 'a-z' 'A-Z' <file-name> -> converts all lowercase letters to uppercase in the specified file and displays the result.
+- tr -d 'pattern' <file-name> -> deletes all occurrences of the specified pattern from the specified file and displays the result.
+- fmt <file-name> -> formats the text in the specified file to have a maximum line width of 75 characters by default.
+- fmt -w <width> <file-name> -> formats the text in the specified file to have a maximum line width of the specified width.
+- iconv -f <source-encoding> -t <target-encoding> <file-name> -> converts the character encoding of the specified file from the source encoding to the target encoding.
+    Example: iconv -f UTF-8 -t ISO-8859-1 file.txt -> converts the character encoding of file.txt from UTF-8 to ISO-8859-1.
+
+
+# Documentation and help
+- man <command> -> displays the manual page for the specified command, providing detailed information about its usage and options.
+- <command> --help -> shows a brief help message for the specified command, including its options and usage.
+
+
+# For downloading files from the internet or URLs or hitting APIs
+- wget <url> -> downloads a file from the specified URL.
+- curl <url> -> retrieves the content of the specified URL and displays it on the terminal.
+- curl -O <url> -> downloads a file from the specified URL and saves it with the original filename.
+- curl -L <url> -o <file-name> -> downloads a file from the specified URL, following any redirects, and saves it with the specified filename.
+
+
+# vi editor commands:- vi <file-name> -> opens the specified file in the vi editor.
+--- commands starting with : are to be typed in command/colon mode after pressing esc.
+--- commands without : are to be typed in esc mode directly.
+- h -> move the cursor left in command mode.
+- j -> move the cursor down in command mode.
+- k -> move the cursor up in command mode.
+- l -> move the cursor right in command mode.
+- i -> switch to insert mode to start editing the file.
+- esc -> switch back to command mode from insert mode.
+- :w -> save the changes made to the file.
+- :q -> quit the vi editor.
+- :wq -> save the changes and quit the vi editor.
+- :q! -> quit the vi editor without saving any changes.
+- dd -> delete the current line in command mode.
+- yy -> copy (yank) the current line in command mode.
+- p -> paste the copied or deleted line below the current line in command mode.
+- P -> paste the copied or deleted line above the current line in command mode.
+- u -> undo the last change made in command mode.
+- /<pattern> -> search for a specific pattern in the file in command mode.
+- /?<pattern> -> search for a specific pattern backwards in the file in command mode.
+- n -> go to the next occurrence of the searched pattern in command mode.
+- N -> go to the previous occurrence of the searched pattern in command mode.
+- :set number -> display line numbers in the vi editor.
+- :set nonumber -> hide line numbers in the vi editor.
+- :%s/old/new/g -> replace all occurrences of 'old' with 'new' in the entire file.
+- :%s/old/new/gc -> replace all occurrences of 'old' with 'new' in the entire file, with confirmation for each replacement.
+- gg -> go to the beginning of the file in command mode.
+- G -> go to the end of the file in command mode.
+- x -> delete the character under the cursor in command mode.
+- r<char> -> replace the character under the cursor with <char> in command mode.
+- :set paste -> enable paste mode to prevent auto-indentation when pasting text.
+- :set nopaste -> disable paste mode.
+- :help <topic> -> display help information about a specific topic in vi editor.
+- :!<command> -> execute a shell command from within the vi editor.
+- :r <file-name> -> read the contents of a file and insert it at the current cursor position in command mode.
+- v -> switch to visual mode to select text for copying or deleting.
+- V -> switch to visual line mode to select entire lines of text for copying or deleting.
+- Ctrl + v -> switch to visual block mode to select a block of text for copying or deleting.
+- > -> indent the selected text to the right in visual mode.
+- < -> indent the selected text to the left in visual mode.
+- :set tabstop=<number> -> set the number of spaces a tab character represents.
+- :set shiftwidth=<number> -> set the number of spaces to use for each step of (auto)indent.
+- :set expandtab -> convert tabs to spaces when inserting a tab character.
+- :set noexpandtab -> use actual tab characters when inserting a tab character.
+- :set wrap -> enable line wrapping in the vi editor.
+- :set nowrap -> disable line wrapping in the vi editor.
+- :<line-number> -> go to the specified line number in command mode.
+- I -> insert text at the beginning of the current line in command mode.
+- A -> append text at the end of the current line in command mode.
+- cw -> change (replace) the word under the cursor in command mode.
+- C -> change (replace) the text from the cursor position to the end of the line in command mode.
+- J -> join the current line with the next line in command mode.
+- :%y+ -> copy the entire file content to the system clipboard in command mode.
+- "+p -> paste content from the system clipboard in command mode.
+- :set cursorline -> highlight the current line where the cursor is located.
+- :set nocursorline -> disable highlighting of the current line.
+- :<line-number>G -> go to the specified line number in command mode.
+- :<start-line>,<end-line>d -> delete lines from start-line to end-line in command mode.
+- :<start-line>,<end-line>y -> copy (yank) lines from start-line to end-line in command mode.
+- :<start-line>,<end-line>p -> paste the copied lines after end-line in command mode.
+- :<linemumber>s/old/new/g -> replace all occurrences of 'old' with 'new' in the specified line.
+- <line-number>d -> delete the specified line number in command mode.
+
+
+## Linux administration commands
+    # User management:
+    - useradd <username> -> creates a new user with the specified username.
+    - groupadd <groupname> -> creates a new group with the specified group name.
+    - userdel <username> -> deletes the specified user.
+    - groupdel <groupname> -> deletes the specified group.
+    - passwd <username> -> changes the password for the specified user.
+    - gpasswd -d <username> <groupname> -> removes the specified user from the specified group.
+    - usermod -aG <group> <username> -> adds the specified user to the specified group. 
+    - usermod -rG <group> <username> -> removes the specified user from the specified group.
+    - usermod -n <new-username> <old-username> -> changes the username from old-username to new-username.
+    - usermod -g <group> <username> -> changes the primary group of the specified user to the specified group.
+    - usermod -d <home-directory> <username> -> changes the home directory of the specified user to the specified directory.
+    - usermod -s <shell> <username> -> changes the login shell of the specified user to the specified shell.
+    - usermod -G <group1>,<group2> <username> -> sets the user's groups to the specified groups (removes from other groups).
+    - usermod -L <username> -> locks the specified user account.
+    - usermod -U <username> -> unlocks the specified user account.
+    - groups <username> -> displays the groups that the specified user belongs to.
+    - id <username> -> displays the user ID (UID) and group ID (GID) of the specified user.
+    - last -> shows the last login history of users on the system.
+
+    # Files and permissions:
+    - chmod <permissions> <file/directory> -> changes the permissions of the specified file or directory.
+      Example: chmod 755 file.txt -> sets the permissions of file.txt to rwxr-xr-xr.
+    - chmod u+x <file> -> adds execute permission for the owner of the specified file.
+    - chmod g-w <file> -> removes write permission for the group of the specified file.
+    - chmod o=r <file> -> sets read-only permission for others on the specified file
+    - chmod 640 <file> -> sets the permissions of the specified file to rw-r----- (owner: read/write, group: read, others: no permissions). 
+        Each digit is a sum of:
+        #   4 = read (r)
+        #   2 = write (w)
+        #   1 = execute (x)
+        #
+        # Example: 755 = rwxr-xr-x
+        #   7 = 4+2+1 = rwx (owner)
+        #   5 = 4+0+1 = r-x (group)
+        #   5 = 4+0+1 = r-x (others)
+        #
+        # Common values:
+        #   777 = rwxrwxrwx (full access)
+        #   755 = rwxr-xr-x (common for directories)
+        #   644 = rw-r--r-- (common for files) 
+    - chown <owner>:<group> <file/directory> -> changes the owner and group of the specified file or directory.
+    - umask <mask> -> sets the default file creation permissions mask.
+    - lsattr <file/directory> -> lists the attributes of the specified file or directory.
+    - chattr +i <file/directory> -> makes the specified file or directory immutable (cannot be modified or deleted).
+    - chattr -i <file/directory> -> removes the immutable attribute from the specified file or directory.
+    - getfacl <file/directory> -> displays the access control lists (ACLs) of the specified file or directory.
+    - setfacl -m u:<username>:<permissions> <file/directory> -> modifies the ACLs of the specified file or directory to grant the specified user the specified permissions.
+    - setfacl -x u:<username> <file/directory> -> removes the specified user's ACLs from the specified file or directory.
+    File Ownership :
+    - chown <user>:<group> <file> -> changes the owner and group of a file.
+    - chown -R <user>:<group> <directory> -> changes the owner and group of a directory and its contents recursively.
+    - stat <file> -> displays detailed information about a file, including ownership and permissions.
+    
+
+# Networking commands:
+- ifconfig -> displays network interface configuration and status.
+- ip addr show -> shows detailed information about network interfaces and their IP addresses.
+- ping <host> -> sends ICMP echo requests to the specified host to check connectivity.
+- traceroute <host> -> traces the route taken by packets to reach the specified host.  
+- netstat -tuln -> displays active TCP and UDP network connections and listening ports.
+- telnet <host> <port> -> connects to the specified host and port using the Telnet protocol.
+- 
+  arguments:
+    -t : show TCP connections
+    -u : show UDP connections
+    -l : show only listening ports
+    -n : show numerical addresses instead of resolving hostnames
+    -p : show the PID and name of the program to which each socket belongs
+- ss -tuln -> displays active TCP and UDP network connections and listening ports (replacement for netstat).
+- dig <domain> -> performs DNS lookups for the specified domain.
+- nslookup <domain> -> queries DNS servers for information about the specified domain.
+- curl <url> -> retrieves the content of the specified URL and displays it on the terminal.
+- wget <url> -> downloads a file from the specified URL.  
+- ftp <host> -> connects to the specified FTP server for file transfers.
+- scp <source> <user>@<host>:<destination> -> securely copies files or directories from the source to the destination on a remote host.
+- rsync -avz <source> <user>@<host>:<destination> -> synchronizes files and directories between the source and destination on a remote host.
+- sudo ss -ltnp -> Show listening TCP sockets with process info
+- sudo fuser -n tcp 3000 -> Check which PID is using TCP port 3000
+- sudo lsof -i :3000 -> List open files and processes using port 3000
+- sudo lsof -iTCP -sTCP:LISTEN -P -n  -> List all listening TCP ports with process info
+- lsof -p 1234 -> Show open files for a PID 1234
+- lsof +L1 -> Show deleted but-open files
+
+
+## Find commands
+- find <directory> -name "<file-name>" -> searches for files with the specified name in the specified directory and its subdirectories.
+Argument for find command are:
+    - name : search by file name
+    - type : search by file type (f for files, d for directories)
+    - size : search by file size (e.g., +100M for files larger than 100MB)
+    - mtime : search by modification time (e.g., -7 for files modified in the last 7 days)
+    - user : search by file owner
+    - exec : execute a command on the found files
+    Example: find /var/log -type f -name "*.log" -size +10M -> finds all log files larger than 10MB in /var/log directory.
+             find /home -type d -name "backup" -> finds all directories named "backup" in /home directory.
+             find /tmp -type f -mtime -1 -> finds all files modified in the last 1 day in /tmp directory.
+             find / -user john -> finds all files owned by user 'john' in the entire filesystem.
+             find /var/www -type f -name "*.html" -exec grep -l "Welcome" {} \; -> finds all HTML files in /var/www directory that contain the word "Welcome" and lists their names.
+             find /home -type f -name "*.tmp" -exec rm -f {} \; -> finds and deletes all .tmp files in /home directory.  
+
+
+
+
+
+
+
+
