@@ -1,5 +1,10 @@
 #!/bin/bash
 
+## use set and trap for error handling in bash scripts
+set -e
+set -o pipefail
+trap 'echo -e "\e[31mScript failed at line: $LINENO\e[0m"' ERR
+
 USER=$(id -u)
 SCRIPT_NAME=$(echo $0 | cut -d . -f1)
 LOGS_FILE="/var/log/Shell-roboshop/$SCRIPT_NAME.log"
@@ -116,6 +121,10 @@ systemctl restart catalogue
 VALIDATE "Restarting Catalogue Service"
 
 echo -e "\e[34m********** $SCRIPT_NAME Script Execution Completed at $(date +%F-%H-%M-%S) **********\e[0m" >> $LOGS_FILE
+
+
+
+
 
 
 
