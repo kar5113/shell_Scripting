@@ -109,6 +109,31 @@ log() { echo "[INFO] $*"; }
 error() { echo "[ERROR] $*" >&2; }
 - Return numeric: return 0; pass values via output: echo value and capture with $(func).
 
+To call another shell script in a script, use:
+```bash
+#!/usr/bin/env bash
+# Call another script
+./other_script.sh arg1 arg2
+# Or source it to run in the same shell
+source ./other_script.sh
+```
+The difference is that sourcing runs the script in the current shell, so variables/functions persist, while executing runs it in a subshell.
+
+
+The stderr and stdout of the called script can be redirected or captured as needed. 
+example
+
+```bash
+output=$(./other_script.sh arg1 arg2 2>&1) # captures both stdout and stderr
+echo "Output: $output"
+#only stderr
+./other_script.sh arg1 arg2 2> error.log # redirects stderr to a file
+#only stdout
+./other_script.sh arg1 arg2 > output.log # redirects stdout to a file
+# to dev null
+./other_script.sh arg1 arg2 > /dev/null 2>&1 # discards both stdout and stderr
+```
+
 ---
 
 ## 11. File Operations & Tests
@@ -350,4 +375,136 @@ trap 'echo "Cleaning up"' EXIT
 
 ---
 
+IFS loop example by reading a file line by line:
+```bash
+#!/usr/bin/env bash
+while IFS= read -r line; do
+  echo "Line: $line"
+done < input.txt
+```
+This safely reads each line of input.txt, preserving whitespace and avoiding word splitting.
+
 Practice by writing and running your own scripts. Start small; iterate quickly; keep your scripts safe and readable.
+
+
+
+# Argo rollouts example;
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: example-rollout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: example
+  template:
+    metadata:
+      labels:
+        app: example
+    spec:
+      containers:
+      - name: example-container
+        image: example/image:1.0
+        ports:
+        - containerPort: 80
+  strategy: 
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {duration: 10s}
+      - setWeight: 50
+      - pause: {duration: 10s}
+      - setWeight: 100
+```
+
+Blue green deployment example:
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: blue-green-rollout
+spec:   
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blue-green-example
+  template:
+    metadata:
+      labels:
+        app: blue-green-example
+    spec:
+      containers:
+      - name: example-container
+        image: example/image:1.0
+        ports:
+        - containerPort: 80
+  strategy:
+    blueGreen:
+      activeService: blue-green-active
+      previewService: blue-green-preview
+      autoPromotionEnabled: true
+```
+
+now argo cd example:
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+  name: example-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/example/repo.git'
+    targetRevision: HEAD
+    path: manifests
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+```
+
+now using both argocd and rollout is possible, you can define a rollout in your manifests and manage it with Argo CD. The rollout will handle the deployment strategy (canary or blue-green), while Argo CD will manage the application lifecycle, syncing the manifests from the Git repository to the Kubernetes cluster.
+Be careful here cause rollouts are managed by Argo Rollouts controller, so make sure the controller is installed in your cluster and that Argo CD has the necessary permissions to manage the rollout resources. Rollout managed by rollouts controller will not be automatically synced by Argo CD unless you have the proper configuration in place.
+The config is :
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: example-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/example/repo.git'
+    targetRevision: HEAD
+    path: manifests
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true # while rollout the application will go out of sync, so this option will make sure that Argo CD will only apply changes to resources that are out of sync, which is useful for managing rollouts without interfering with the rollout controller's operations.
+```
+here when you set ApplyOutOfSyncOnly=true, Argo CD will only apply changes to resources that are out of sync, which is useful for managing rollouts without interfering with the rollout controller's operations.
+
+argo cd app of apps with rollout example:
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: parent-application
+  namespace: argocd
+spec:
+  project: default  
