@@ -1,0 +1,243 @@
+# Example prometheus queries:
+- To get the current value of a metric: `metric_name`
+- To get the value of a metric over time: `metric_name[time_range]`
+- To get the rate of change of a metric: `rate(metric_name[time_range])
+- To get the average value of a metric over time: `avg_over_time(metric_name[time_range])`
+- To get the maximum value of a metric over time: `max_over_time(metric_name[time_range])`
+- To get the minimum value of a metric over time: `min_over_time(metric_name[time_range])`
+- To get the sum of a metric over time: `sum_over_time(metric_name[time_range])`
+- To get the count of a metric over time: `count_over_time(metric_name[time_range])`
+- To get the histogram of a metric over time: `histogram_quantile(quantile, sum(rate(metric_name_bucket[    time_range])) by (le))` 
+
+- some useful prometheus functions:
+- `rate(metric_name[time_range])` - calculates the per-second average rate of increase of the time series in the range vector.
+- `avg_over_time(metric_name[time_range])` - calculates the average value of the time series in the range vector.
+- `max_over_time(metric_name[time_range])` - calculates the maximum value of the time series in the range vector
+- `min_over_time(metric_name[time_range])` - calculates the minimum value of the time series in the range vector.
+- `sum_over_time(metric_name[time_range])` - calculates the sum of the values of the time series in the range vector.
+- `count_over_time(metric_name[time_range])` - calculates the count of the values of the time series in the range vector.
+- `histogram_quantile(quantile, sum(rate(metric_name_bucket[time_range])) by (le))` - calculates the quantile value of a histogram metric over time.
+
+- some useful prometheus operators:
+- `+` - addition operator, adds two time series together.
+- `-` - subtraction operator, subtracts one time series from another.
+- `*` - multiplication operator, multiplies two time series together.
+- `/` - division operator, divides one time series by another.
+- `and` - logical AND operator, returns the intersection of two time series.
+- `or` - logical OR operator, returns the union of two time series.
+
+- some useful prometheus aggregations:
+- `sum` - calculates the sum of the values of a time series.
+- `avg` - calculates the average of the values of a time series.
+- `min` - calculates the minimum value of a time series.
+- `max` - calculates the maximum value of a time series.
+- `count` - calculates the count of the values of a time series.
+- `count_values` - calculates the count of unique values of a time series.
+
+- some useful prometheus labels:
+- `instance` - the instance label identifies the target instance of a metric.
+- `job` - the job label identifies the job that produced a metric.
+- `namespace` - the namespace label identifies the namespace of a metric.
+
+
+- some useful prometheus metrics:
+- `up` - indicates whether a target is up (1) or down (0).
+- `process_cpu_seconds_total` - the total user and system CPU time spent in seconds.
+- `process_resident_memory_bytes` - the resident memory size in bytes.
+- `http_requests_total` - the total number of HTTP requests received.
+- `http_request_duration_seconds` - the duration of HTTP requests in seconds.
+- `node_cpu_seconds_total` - the total number of seconds the CPU has spent in each mode (user, system, idle, etc.).
+- `node_memory_MemTotal_bytes` - the total amount of memory in bytes.
+- `node_memory_MemFree_bytes` - the amount of free memory in bytes.
+- `node_network_receive_bytes_total` - the total number of bytes received over the network.
+
+
+To colect these metrics, you can use the prometheus node exporter. It is a daemon that runs on your servers and exposes various system metrics in a format that prometheus can scrape. You can install it on your servers and configure prometheus to scrape metrics from it.
+example config for prometheus to scrape metrics from node exporter:
+# this is added to prometheus.yml file
+```yaml
+scrape_configs:
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['<node_exporter_host>:9100'] 
+```
+
+now the node exporter will expose metrics on port 9100, and prometheus will scrape metrics from it. You can then use the prometheus queries mentioned above to analyze the metrics collected by the node exporter.
+the config for node exporter is as follows:
+```yaml
+# this is added to node_exporter.yml file
+collector:
+  cpu: true
+  meminfo: true
+  netdev: true
+  diskstats: true
+  filesystem: true
+  loadavg: true
+  time: true
+  uname: true
+  textfile: true
+  # add more collectors as needed
+```
+
+# Alerts can be configured in prometheus using the alerting rules. You can define alerting rules in a separate file and then include that file in the prometheus.yml configuration. The alerting rules define the conditions under which an alert should be triggered, and the actions to be taken when the alert is triggered.
+example config for alerting rules:
+```yaml
+groups:
+  - name: example_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: rate(process_cpu_seconds_total[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage detected"
+          description: "The CPU usage has been above 80% for the last 5 minutes."
+```
+A complex alerting rule can be created by combining multiple conditions using logical operators (AND, OR, NOT). For example, you can create an alert that triggers when both CPU usage and memory usage are high:
+```yaml
+groups:
+  - name: complex_alerts
+    rules:
+      - alert: HighCPUAndMemoryUsage
+        expr: rate(process_cpu_seconds_total[5m]) > 0.8 and (process_resident_memory_bytes / node_memory_MemTotal_bytes) > 0.8
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU and Memory usage detected"
+          description: "The CPU usage has been above 80% and memory usage has been above 80% for the last 5 minutes."
+```
+For alerting over mail
+, you can use the Alertmanager component of Prometheus. You can configure Alertmanager to send email notifications when an alert is triggered. You need to configure the email settings in the Alertmanager configuration file (alertmanager.yml) and then include the Alertmanager URL in the Prometheus configuration (prometheus.yml).
+example config for Alertmanager to send email notifications:
+```yaml
+global:
+  smtp_smarthost: 'smtp.example.com:587'
+  smtp_from: 'alertmanager@example.com'
+    smtp_auth_username: 'alertmanager@example.com'
+    smtp_auth_password: 'your_password'
+    smtp_require_tls: true
+
+route:
+  receiver: 'email-notifications'
+receivers:
+  - name: 'email-notifications'
+    email_configs:
+      - to: 'your_email@example.com'
+        from: 'alertmanager@example.com'
+        smarthost: 'smtp.example.com:587'
+        auth_username: 'alertmanager@example.com'
+        auth_password: 'your_password'
+        require_tls: true
+```
+
+Now for installing prometheus in K8s cluster, follow these steps:
+1. Create a namespace for Prometheus:
+```bash
+kubectl create namespace monitoring
+```
+2. Create a ConfigMap for Prometheus configuration:
+```bash
+kubectl create configmap prometheus-config --from-file=prometheus.yml -n monitoring
+```
+3. Create a Deployment for Prometheus:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest   
+        args:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: prometheus-config-volume
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
+      volumes:
+      - name: prometheus-config-volume
+        configMap:
+          name: prometheus-config
+```
+4. Create a Service for Prometheus:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  selector:
+    app: prometheus
+  ports:
+  - protocol: TCP
+    port: 9090
+    targetPort: 9090
+  type: ClusterIP
+```
+5. Apply the Deployment and Service:
+```bash
+kubectl apply -f prometheus-deployment.yaml
+kubectl apply -f prometheus-service.yaml
+```
+6. Verify that Prometheus is running:
+```bash
+kubectl get pods -n monitoring
+kubectl get svc -n monitoring
+```
+7. Access the Prometheus web interface by port-forwarding:
+```bash
+kubectl port-forward svc/prometheus 9090:9090 -n monitoring
+```
+8. The metrics to be scraped by Prometheus can be configured in the prometheus.yml file. You can add scrape configurations for different targets, such as node exporters, application metrics endpoints, etc. For example:
+```yaml
+scrape_configs:
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['<node_exporter_host>:9100']
+  - job_name: 'my_application'
+    static_configs:
+      - targets: ['<my_application_host>:<metrics_port>']   
+```
+the actual metrics to be scraped will depend on the applications and services running in your Kubernetes cluster. You can configure Prometheus to scrape metrics from various sources, such as node exporters, application metrics endpoints, and custom metrics exposed by your applications.
+the node exporter can be deployed by following these steps:
+1. Create a DaemonSet for Node Exporter:
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+      - name: node-exporter
+        image: prom/node-exporter:latest
+        ports:
+        - containerPort: 9100
+          name: metrics
+          protocol: TCP
+```          
+

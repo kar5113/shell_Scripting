@@ -1,0 +1,6 @@
+#### 
+
+Observability states , if you have observability in the system you can have internal state of the system.
+it also helps in why the system is failing.
+
+
