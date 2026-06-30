@@ -4,6 +4,12 @@
 - ssh-keygen -f <file-name> -> generates a key pair and saves it to the specified file.
 - ssh-copy-id -i <public-key-file> <user>@<host> -> copies the public key to the remote host for passwordless SSH access.
 - ssh -i <private-key-file> <user>@<host> -> connects to the remote host using the specified private key for authentication.
+change sshd config file to allow passwordless ssh access:
+- Edit /etc/ssh/sshd_config file and set the following parameters:
+    PubkeyAuthentication yes
+    PasswordAuthentication no
+    ChallengeResponseAuthentication no
+- sshd -t -> tests the SSH daemon configuration for syntax errors. 
 
 # For super user access
 - sudo su -> switches to the superuser (root) account.
@@ -19,6 +25,7 @@
 - cd <directory> -> changes the current directory to the specified directory.
 - pwd -> prints the current working directory.
 - mkdir <directory-name> -> creates a new directory with the specified name.    
+- mkdir -p <directory-path> -> creates a new directory along with any necessary parent directories.
 - rm -rf <directory-name> -> removes the specified directory and its contents recursively and forcefully.
 - cp <source> <destination> -> copies files or directories from the source to the destination.
 - mv <source> <destination> -> moves or renames files or directories from the source to the destination.
@@ -30,6 +37,12 @@
 - df -h -> shows disk space usage in a human-readable format.
 - free -m -> displays memory usage in megabytes.
 - uname -r -> shows the kernel version of the operating system.
+ uname -r -> shows the kernel version of the operating system.
+ uname -a -> shows all available system information (kernel, hostname, architecture, etc).
+ uname -s -> shows the kernel name (e.g., Linux).
+ uname -n -> shows the network node hostname.
+ uname -m -> shows the machine hardware name (architecture).
+ uname -o -> shows the operating system name.
 - ps aux -> lists all running processes with detailed information.
 - ps -> lists the processes running in the current shell session.
 - ps -ef -> lists all running processes in a full-format listing.
@@ -38,6 +51,12 @@
 - killall <process-name> -> terminates all processes with the specified name.
 - kill <process-id> -> terminates the specified process by its process ID.
 - use & to run a process in the background. Example: sleep 100 &
+- nice -n <priority> <command> -> runs a command with the specified priority level (lower value means higher priority).
+- renice <priority> -p <process-id> -> changes the priority of a running process to the specified priority level.
+- htop -> an interactive process viewer that provides a more user-friendly interface than top, allowing for easier process management and monitoring.
+- for seeing the mount points and their disk usage, use the command: df -h or mount | column -t
+- for seeing the disk usage of files and directories, use the command: du -h <file/directory-name> or du -sh <file/directory-name> for total size of a directory.
+- for seeing the volumes and their disk usage, use the command: lsblk or lsblk -f for filesystem information as well.
 
 
 
@@ -106,6 +125,23 @@
 - fmt -w <width> <file-name> -> formats the text in the specified file to have a maximum line width of the specified width.
 - iconv -f <source-encoding> -t <target-encoding> <file-name> -> converts the character encoding of the specified file from the source encoding to the target encoding.
     Example: iconv -f UTF-8 -t ISO-8859-1 file.txt -> converts the character encoding of file.txt from UTF-8 to ISO-8859-1.
+- du -h <directory-name> -> displays the disk usage of the specified directory and its contents in a human-readable format.
+- du -sh <directory-name> -> displays the total disk usage of the specified directory in a human-readable format.
+- du -a <directory-name> -> displays the disk usage of all files and directories within the specified directory.
+- du --max-depth=1 <directory-name> -> displays the disk usage of the specified directory and its immediate subdirectories.
+- du --max-depth=2 <directory-name> -> displays the disk usage of the specified directory and its subdirectories up to a depth of 2.
+- du -sh * -> displays the disk usage of all files and directories in the current directory in a human-readable format.
+- du -sh .??* -> displays the disk usage of all hidden files and directories in the current directory in a human-readable format.
+- du -a . | sort -n -r | head -n 10 -> displays the top 10 largest files and directories in the current directory and its subdirectories.    
+- sort -n <file-name> -> sorts the lines of a file in numerical order.
+- sort -n -r <file-name> -> sorts the lines of a file in reverse numerical order.
+- IFS read -> read input with a custom delimiter. Example: IFS=',' read -r field1 field2 field3 <<< "value1,value2,value3" -> splits the input string into three fields using comma as the delimiter.
+- crontab -e -> opens the crontab file for editing to schedule periodic tasks.
+- zip <zip-file-name>.zip <file1> <file2> ... -> creates a zip archive containing the specified files.
+- unzip <zip-file-name>.zip -> extracts the contents of the specified zip archive.
+- zip -@ -j <zip-file-name>.zip < file-list.txt -> creates a zip archive containing the files listed in file-list.txt, without including directory paths.
+    - @ is for reading file names from standard input.
+    - j is for junking the paths (not including directory paths in the zip archive). like zip -j archive.zip /path/to/file1 /path/to/file2 will store only file1 and file2 in the zip archive without their directory paths.
 
 
 # Documentation and help
@@ -138,8 +174,8 @@
 - p -> paste the copied or deleted line below the current line in command mode.
 - P -> paste the copied or deleted line above the current line in command mode.
 - u -> undo the last change made in command mode.
-- /<pattern> -> search for a specific pattern in the file in command mode.
-- /?<pattern> -> search for a specific pattern backwards in the file in command mode.
+- /<pattern> -> search for a specific pattern in the file in command mode. from top to bottom
+- ?<pattern> -> search for a specific pattern in the file in command mode. from bottom to top
 - n -> go to the next occurrence of the searched pattern in command mode.
 - N -> go to the previous occurrence of the searched pattern in command mode.
 - :set number -> display line numbers in the vi editor.
@@ -181,12 +217,16 @@
 - :<start-line>,<end-line>y -> copy (yank) lines from start-line to end-line in command mode.
 - :<start-line>,<end-line>p -> paste the copied lines after end-line in command mode.
 - :<linemumber>s/old/new/g -> replace all occurrences of 'old' with 'new' in the specified line.
+- :%s/old/new/g -> replace all occurrences of 'old' with 'new' in the entire file.
+- :<line-number>s/old/new/ -> replace the first occurrence of 'old' with 'new' in the specified line.
+- :<line-number>s/old/new/2 -> replace the second occurrence of 'old' with 'new' in the specified line.
+- :<line-number>s/old/new/$ -> replace the last occurrence of 'old' with 'new' in the specified line.
 - <line-number>d -> delete the specified line number in command mode.
 
 
 ## Linux administration commands
     # User management:
-    - useradd <username> -> creates a new user with the specified username.
+    - useradd <username> -> creates a new user with the specified username. Doesnt create home directory by default, use -m option to create home directory as well. or adduser <username> to create user with home directory by default. 
     - groupadd <groupname> -> creates a new group with the specified group name.
     - userdel <username> -> deletes the specified user.
     - groupdel <groupname> -> deletes the specified group.
@@ -238,6 +278,7 @@
     - chown <user>:<group> <file> -> changes the owner and group of a file.
     - chown -R <user>:<group> <directory> -> changes the owner and group of a directory and its contents recursively.
     - stat <file> -> displays detailed information about a file, including ownership and permissions.
+    - dmesg | grep <keyword> -> searches the kernel ring buffer for messages containing the specified keyword, which can include information about file system events and errors.
     
 
 # Networking commands:
@@ -247,16 +288,21 @@
 - traceroute <host> -> traces the route taken by packets to reach the specified host.  
 - netstat -tuln -> displays active TCP and UDP network connections and listening ports.
 - telnet <host> <port> -> connects to the specified host and port using the Telnet protocol.
-- 
   arguments:
     -t : show TCP connections
     -u : show UDP connections
     -l : show only listening ports
     -n : show numerical addresses instead of resolving hostnames
     -p : show the PID and name of the program to which each socket belongs
-- ss -tuln -> displays active TCP and UDP network connections and listening ports (replacement for netstat).
-- dig <domain> -> performs DNS lookups for the specified domain.
+- ss -tulnp -> displays active TCP and UDP network connections and listening ports (replacement for netstat).
+    arguments:
+    -t : show TCP connections
+    -u : show UDP connections
+    -l : show only listening ports
+    -n : show numerical addresses instead of resolving hostnames
+    -p : show the PID and name of the program to which each socket belongs
 - nslookup <domain> -> queries DNS servers for information about the specified domain.
+- dig <domain> -> performs DNS lookups for the specified domain.
 - curl <url> -> retrieves the content of the specified URL and displays it on the terminal.
 - wget <url> -> downloads a file from the specified URL.  
 - ftp <host> -> connects to the specified FTP server for file transfers.
@@ -268,6 +314,9 @@
 - sudo lsof -iTCP -sTCP:LISTEN -P -n  -> List all listening TCP ports with process info
 - lsof -p 1234 -> Show open files for a PID 1234
 - lsof +L1 -> Show deleted but-open files
+- traceroute -n <host> -> traces the route taken by packets to reach the specified host, showing numerical IP addresses instead of resolving hostnames.
+- mtr <host> -> combines the functionality of traceroute and ping to provide real-time network diagnostics for the specified host.
+
 
 
 ## Find commands
@@ -279,12 +328,98 @@ Argument for find command are:
     - mtime : search by modification time (e.g., -7 for files modified in the last 7 days)
     - user : search by file owner
     - exec : execute a command on the found files
+    - for hidden files or directories, use -name ".*" to search for them.
     Example: find /var/log -type f -name "*.log" -size +10M -> finds all log files larger than 10MB in /var/log directory.
              find /home -type d -name "backup" -> finds all directories named "backup" in /home directory.
              find /tmp -type f -mtime -1 -> finds all files modified in the last 1 day in /tmp directory.
              find / -user john -> finds all files owned by user 'john' in the entire filesystem.
              find /var/www -type f -name "*.html" -exec grep -l "Welcome" {} \; -> finds all HTML files in /var/www directory that contain the word "Welcome" and lists their names.
              find /home -type f -name "*.tmp" -exec rm -f {} \; -> finds and deletes all .tmp files in /home directory.  
+
+
+## Service or process management commands:
+- systemctl start <service-name> -> starts the specified service.
+- systemctl stop <service-name> -> stops the specified service.
+- systemctl restart <service-name> -> restarts the specified service.
+- systemctl status <service-name> -> shows the status of the specified service.
+- systemctl enable <service-name> -> enables the specified service to start at boot.
+- systemctl disable <service-name> -> disables the specified service from starting at boot.
+- systemctl is-active <service-name> -> checks if the specified service is currently active (running).
+- systemctl is-enabled <service-name> -> checks if the specified service is enabled to start at boot.
+- systemctl list-units --type=service -> lists all active services on
+- systemctl set-property <service-name> <property>=<value> -> sets a property for the specified service.
+for example: systemctl set-property myservice.service MemoryMax=500M -> limits the memory usage of myservice to 500MB.
+             systemctl set-property myservice.service CPUQuota=50% -> limits the CPU usage of myservice to 50% of a single CPU core.
+- journalctl -u <service-name> -> shows the logs for the specified service.
+- ps aux | grep <service-name> -> checks if a process related to the specified service is running.
+- kill <process-id> -> terminates the specified process by its process ID.
+- killall <process-name> -> terminates all processes with the specified name.
+- systemctl list-units --type=service -> lists all active services on the system.
+- kill -9 <process-id> -> forcefully terminates the specified process by its process ID.
+- ulimit -n <number> -> sets the maximum number of open file descriptors for the current shell session.
+- lsof -i :<port> -> lists processes using the specified port.
+- netstat -tuln -> displays active TCP and UDP network connections and listening ports.
+- ss -tulnp -> displays active TCP and UDP network connections and listening ports (replacement for netstat).
+- ulimit - a -> displays all current resource limits for the shell session.
+- ulimit -n -> displays the current limit for the maximum number of open file descriptors.
+- 
+
+## Bash scripting
+- #!/bin/bash -> shebang line to specify the script interpreter.
+- set -e -> exits the script immediately if any command returns a non-zero exit status.
+- set -u -> treats unset variables as an error and exits the script.
+- set -o pipefail -> causes a pipeline to return the exit status of the last command that returned a non-zero exit status.
+- set -x -> enables debugging mode, printing each command and its arguments as they are executed.
+- set  -euo pipefail -> combination of options to make the script more robust and fail on errors, unset variables, and pipeline failures.
+- $0 -> represents the name of the script being executed.
+- $1, $2, ... -> represent the positional parameters passed to the script (arguments).
+- "$@" -> represents all the positional parameters passed to the script as separate quoted strings.
+- "$*" -> represents all the positional parameters passed to the script as a single string.
+- "$# -> represents the number of positional parameters passed to the script.
+- "$?" -> represents the exit status of the last executed command.
+- "$$" -> represents the process ID of the current script.
+- "$USER" -> represents the username of the user executing the script.
+- if [ condition ]; then ... fi -> basic syntax for an if statement in bash scripting.
+- for var in list; do ... done -> basic syntax for a for loop in bash scripting.
+- while [ condition ]; do ... done -> basic syntax for a while loop in bash scripting.
+- case $variable in pattern ... ;; esac -> basic syntax for a case statement in bash scripting.
+example:
+    case $1 in
+        start)
+            echo "Starting the service..."
+            ;;
+        stop)
+            echo "Stopping the service..."
+            ;;
+        *)
+            echo "Usage: $0 {start|stop}"
+            exit 1
+            ;;
+    esac
+- function function_name { ... } -> defines a function in bash scripting.
+- source <file-name> -> executes the commands from the specified file in the current shell environment.
+- . <file-name> -> another way to source a file in the current shell environment.   
+
+
+
+## Cron jobs
+- crontab -e -> opens the crontab file for editing to schedule periodic tasks.
+- crontab -l -> lists the current user's scheduled cron jobs.
+- crontab -r -> removes all scheduled cron jobs for the current user.
+- crontab -u <username> -e -> opens the crontab file for the specified user to edit their scheduled tasks (requires superuser privileges).
+- crontab -u <username> -l -> lists the scheduled cron jobs for the specified user (requires superuser privileges).
+- crontab -u <username> -r -> removes all scheduled cron jobs for the specified user (requires superuser privileges).
+- * * * * * <command> -> syntax for scheduling a cron job, where the five asterisks represent the minute, hour, day of month, month, and day of week fields, respectively, and <command> is the command to be executed at the scheduled time.
+    Example: 0 2 * * * /path/to/script.sh -> schedules a cron job to run the script.sh at 2:00 AM every day.
+             30 8 * * 1-5 /path/to/backup.sh -> schedules a cron job to run the backup.sh at 8:30 AM every weekday (Monday to Friday).
+             0 0 1 * * /path/to/monthly_report.sh -> schedules a cron job to run the monthly_report.sh at midnight on the first day of every month.
+             */5 * * * * /path/to/cleanup.sh -> schedules a cron job to run the cleanup.sh every 5 minutes.
+             0 0 * * 0 /path/to/weekly_maintenance.sh -> schedules a cron job to run the weekly_maintenance.sh at midnight every Sunday.
+             0 0 1 1 * /path/to/new_year.sh -> schedules a cron job to run the new_year.sh at midnight on January 1st every year.
+
+
+
+
 
 
 
