@@ -144,6 +144,25 @@ change sshd config file to allow passwordless ssh access:
     - j is for junking the paths (not including directory paths in the zip archive). like zip -j archive.zip /path/to/file1 /path/to/file2 will store only file1 and file2 in the zip archive without their directory paths.
 
 
+# For creating command aliases
+- alias -> lists all currently defined aliases in the shell.
+- alias <alias-name> -> displays the definition of a specific alias.
+- alias <alias-name>='<command>' -> creates a new alias with the specified name that executes the specified command. 
+    Example: alias ll='ls -la' -> creates an alias 'll' that executes 'ls -la' when typed.
+    Example: alias gs='git status' -> creates an alias 'gs' for the git status command.
+- unalias <alias-name> -> removes the specified alias.
+- unalias -a -> removes all aliases defined in the current shell session.
+- Making aliases permanent (add to shell configuration file):
+    For bash, add alias commands to ~/.bashrc or ~/.bash_profile:
+        alias ll='ls -la'
+        alias gs='git status'
+    For zsh, add alias commands to ~/.zshrc:
+        alias ll='ls -la'
+        alias gs='git status'
+    After adding aliases to the configuration file, run: source ~/.bashrc (for bash) or source ~/.zshrc (for zsh) to apply the changes immediately.
+    Alternatively, start a new terminal session to load the aliases from the configuration file.
+
+
 # Documentation and help
 - man <command> -> displays the manual page for the specified command, providing detailed information about its usage and options.
 - <command> --help -> shows a brief help message for the specified command, including its options and usage.
